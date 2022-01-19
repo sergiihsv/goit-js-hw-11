@@ -18,8 +18,16 @@ function onSearch(event) {
   event.preventDefault();
 
   imgApiService.query = event.currentTarget.elements.searchQuery.value;
+
+  if (imgApiService.query.trim() === '') {
+    return alert('Sorry, there are no images matching your search query. Please try again.');
+  }
+
   imgApiService.resetPage();
-  imgApiService.fetchArticles().then(appendArticlesMarkup);
+  imgApiService.fetchArticles().then(hits => {
+    clearArticlesContainer();
+    appendArticlesMarkup(hits);
+  });
 }
 
 function onLoadMoreBtn() {
@@ -30,7 +38,6 @@ function appendArticlesMarkup(hits) {
   refs.galleryContainer.insertAdjacentHTML('beforeend', articlesTpl(hits));
 }
 
-/* function clearArticlesContainer() {
+function clearArticlesContainer() {
   refs.galleryContainer.innerHTML = '';
 }
- */
