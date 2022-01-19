@@ -14,6 +14,8 @@ const imgApiService = new ImgApiService();
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtn);
 
+putLoadMoreBtn();
+
 function onSearch(event) {
   event.preventDefault();
 
@@ -23,6 +25,7 @@ function onSearch(event) {
     return alert('Sorry, there are no images matching your search query. Please try again.');
   }
 
+  showLoadMoreBtn();
   imgApiService.resetPage();
   imgApiService.fetchArticles().then(hits => {
     clearArticlesContainer();
@@ -40,4 +43,12 @@ function appendArticlesMarkup(hits) {
 
 function clearArticlesContainer() {
   refs.galleryContainer.innerHTML = '';
+}
+
+function putLoadMoreBtn() {
+  document.querySelector('.load-more').classList.add('is-hidden');
+}
+
+function showLoadMoreBtn() {
+  document.querySelector('.load-more').classList.remove('is-hidden');
 }
