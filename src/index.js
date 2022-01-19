@@ -1,22 +1,27 @@
 import './css/styles.css';
+import './sass/main.scss';
 import PhotoCardTpl from './templates/photo-card.hbs';
+import ImgApiService from './img-api-service';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
   galleryContainer: document.querySelector('.gallery'),
+  loadMoreBtn: document.querySelector('.load-more'),
 };
 
+const imgApiService = new ImgApiService();
+
 refs.searchForm.addEventListener('submit', onSearch);
+refs.loadMoreBtn.addEventListener('click', onLoadMoreBtn);
 
-function onSearch(e) {
-  e.preventDefault();
+function onSearch(event) {
+  event.preventDefault();
 
-  const BASE_URL = 'https://pixabay.com/api/';
-  const API_KEY = '25290744-d6d0934bf026089ed7a084fd9';
+  imgApiService.query = event.currentTarget.elements.searchQuery.value;
+  imgApiService.resetPage();
+  imgApiService.fetchArticles();
+}
 
-  fetch(
-    'https://pixabay.com/api/?key=25290744-d6d0934bf026089ed7a084fd9&q=cat&image_type=photo&orientation=horizontal&safesearch=true&page=1&per_page=40',
-  )
-    .then(r => r.json())
-    .then(console.log);
+function onLoadMoreBtn() {
+  imgApiService.fetchArticles();
 }
