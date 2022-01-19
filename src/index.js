@@ -1,7 +1,7 @@
 import './css/styles.css';
-import './sass/main.scss';
-import PhotoCardTpl from './templates/photo-card.hbs';
+
 import ImgApiService from './img-api-service';
+import articlesTpl from './templates/photo-card.hbs';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -19,9 +19,18 @@ function onSearch(event) {
 
   imgApiService.query = event.currentTarget.elements.searchQuery.value;
   imgApiService.resetPage();
-  imgApiService.fetchArticles();
+  imgApiService.fetchArticles().then(appendArticlesMarkup);
 }
 
 function onLoadMoreBtn() {
-  imgApiService.fetchArticles();
+  imgApiService.fetchArticles().then(appendArticlesMarkup);
 }
+
+function appendArticlesMarkup(hits) {
+  refs.galleryContainer.insertAdjacentHTML('beforeend', articlesTpl(hits));
+}
+
+/* function clearArticlesContainer() {
+  refs.galleryContainer.innerHTML = '';
+}
+ */
