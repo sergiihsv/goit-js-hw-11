@@ -2,6 +2,8 @@ import './css/styles.css';
 
 import ImgApiService from './img-api-service';
 import articlesTpl from './templates/photo-card.hbs';
+import SimpleLightbox from 'simplelightbox';
+import Notiflix from 'notiflix';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -22,14 +24,18 @@ function onSearch(event) {
   imgApiService.query = event.currentTarget.elements.searchQuery.value;
 
   if (imgApiService.query.trim() === '') {
-    return alert('Sorry, there are no images matching your search query. Please try again.');
+    Notiflix.Notify.info('Please, enter you search query.');
+    clearArticlesContainer();
+    putLoadMoreBtn();
+    return;
   }
 
-  showLoadMoreBtn();
   imgApiService.resetPage();
   imgApiService.fetchArticles().then(hits => {
     clearArticlesContainer();
     appendArticlesMarkup(hits);
+    showLoadMoreBtn();
+    galleryModal.refresh();
   });
 }
 
@@ -52,3 +58,10 @@ function putLoadMoreBtn() {
 function showLoadMoreBtn() {
   document.querySelector('.load-more').classList.remove('is-hidden');
 }
+
+const galleryModal = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionType: 'alt',
+  captionDelay: 200,
+  captionPosition: 'bottom',
+});
