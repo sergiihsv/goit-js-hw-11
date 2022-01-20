@@ -1,6 +1,6 @@
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '25290744-d6d0934bf026089ed7a084fd9';
-const PER_PAGE = 8;
+const PER_PAGE = 12;
 
 import axios from 'axios';
 import Notiflix from 'notiflix';
@@ -23,6 +23,7 @@ export default class ImgApiService {
             'Sorry, there are no more images matching your search query. Please try new search.',
           );
         }
+
         this.incrementPage();
         return hits;
       });

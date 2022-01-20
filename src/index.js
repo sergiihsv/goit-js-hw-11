@@ -3,7 +3,10 @@ import './css/styles.css';
 import ImgApiService from './img-api-service';
 import articlesTpl from './templates/photo-card.hbs';
 import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from 'notiflix';
+
+const PER_PAGE = 12;
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -45,6 +48,7 @@ function onLoadMoreBtn() {
 
 function appendArticlesMarkup(hits) {
   refs.galleryContainer.insertAdjacentHTML('beforeend', articlesTpl(hits));
+  galleryModal.refresh();
 }
 
 function clearArticlesContainer() {
@@ -59,9 +63,13 @@ function showLoadMoreBtn() {
   document.querySelector('.load-more').classList.remove('is-hidden');
 }
 
-const galleryModal = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionType: 'alt',
-  captionDelay: 200,
-  captionPosition: 'bottom',
-});
+const galleryModal = new SimpleLightbox('.gallery a', {});
+
+/* function renderMoreImages(event) {
+  if (imagesAPIService.totalHits <= PER_PAGE * (imagesAPIService.page - 1)) {
+    putLoadMoreBtn();
+    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+  }
+} */
+
+console.log(imgApiService.totalHits);
