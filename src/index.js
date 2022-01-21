@@ -64,12 +64,3 @@ function showLoadMoreBtn() {
 }
 
 const galleryModal = new SimpleLightbox('.gallery a', {});
-
-/* function renderMoreImages(event) {
-  if (imagesAPIService.totalHits <= PER_PAGE * (imagesAPIService.page - 1)) {
-    putLoadMoreBtn();
-    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
-  }
-} */
-
-console.log(imgApiService.totalHits);

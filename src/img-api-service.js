@@ -9,9 +9,42 @@ export default class ImgApiService {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
+    this.totalHits = 0;
   }
 
+  /* async fetchArticles() {
+    await axios
+      .get(
+        `${BASE_URL}?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=${PER_PAGE}`,
+      )
+
+      .then(r => r.json())
+      .then(({ hits }) => {
+        console.log(hits);
+        if (hits.length === 0) {
+          Notiflix.Notify.failure(
+            'Sorry, there are no more images matching your search query. Please try new search.',
+          );
+        }
+
+        this.incrementPage();
+        return hits;
+      });
+  } */
+
   async fetchArticles() {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=${PER_PAGE}`,
+      );
+
+      return hits;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /* async fetchArticles() {
     return await fetch(
       `${BASE_URL}?key=${API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=${PER_PAGE}`,
     )
@@ -27,7 +60,7 @@ export default class ImgApiService {
         this.incrementPage();
         return hits;
       });
-  }
+  } */
 
   incrementPage() {
     this.page += 1;
