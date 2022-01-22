@@ -6,7 +6,7 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from 'notiflix';
 
-const PER_PAGE = 12;
+/* const PER_PAGE = 12; */
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -64,3 +64,46 @@ function showLoadMoreBtn() {
 }
 
 const galleryModal = new SimpleLightbox('.gallery a', {});
+
+async function fetchArticles() {
+  putLoadMoreBtn();
+
+  try {
+    const images = await imgApiService.fetchArticles();
+    countOfImages();
+    if (images.length === 0) {
+      putLoadMoreBtn();
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.',
+      );
+      /* gallery.innerHTML = ''; */
+    }
+    render(images);
+
+    galleryModal.refresh();
+
+    if (images.length < imgApiService.perPage) {
+      putLoadMoreBtn();
+    }
+    showLoadMoreBtn();
+  } catch {
+    Notiflix.Notify.failure('Sorry.Something wrong(');
+  }
+}
+
+function countOfImages() {
+  const quantityImagesOnPage = imgApiService.perPage;
+  const currentImages = imgApiService.page * imgApiService.perPage - imgApiService.perPage;
+  const totalImages = imgApiService.totalImages;
+
+  if (currentImages === quantityImagesOnPage && totalImages !== 0) {
+    Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
+  }
+
+  if (currentImages > totalImages && totalImages !== 0 && totalImages > quantityImagesOnPage) {
+    putLoadMoreBtn();
+    Notiflix.Notify.info(
+      `We're sorry, but you've reached the end of search ${totalImages} results`,
+    );
+  }
+}
