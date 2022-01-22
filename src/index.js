@@ -31,7 +31,6 @@ function onSearch(event) {
   if (imgApiService.query.trim() === '') {
     Notiflix.Notify.info('Please, enter you search query.');
     clearArticlesContainer();
-    putLoadMoreBtn();
 
     return;
   }
@@ -67,12 +66,6 @@ function showLoadMoreBtn() {
   document.querySelector('.load-more').classList.remove('is-hidden');
 }
 
-function countOfImages() {
-  if (/* imgApiService.page === totalImages &&  */ totalImages !== 0) {
-    Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
-  }
-}
-
 const galleryModal = new SimpleLightbox('.gallery a', {});
 
 async function fetchArticles() {
@@ -96,56 +89,17 @@ async function fetchArticles() {
     if (images.length < imgApiService.perPage) {
       putLoadMoreBtn();
     }
-    /* showLoadMoreBtn(); */
+  } catch {
     /* Notiflix.Notify.failure('Sorry.Something wrong('); */
-  } catch {}
+  }
 }
 
 function countOfImages() {
-  const quantityImagesOnPage = imgApiService.perPage;
-  const currentImages = imgApiService.page * imgApiService.perPage - imgApiService.perPage;
   const totalImages = imgApiService.totalImages;
 
-  if (/* imgApiService.page === totalImages &&  */ totalImages !== 0) {
+  if (totalImages > 0) {
     Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
   }
-
-  if (currentImages > totalImages && totalImages !== 0 && totalImages > quantityImagesOnPage) {
-    putLoadMoreBtn();
-    Notiflix.Notify.info(
-      `We're sorry, but you've reached the end of search ${totalImages} results`,
-    );
-  }
-
-  console.log(quantityImagesOnPage);
-  console.log(currentImages);
-  console.log(totalImages);
-  console.log(imgApiService.page);
 }
 
 console.log(imgApiService);
-
-/* 
-
-function countOfImages() {
-  const quantityImagesOnPage = imgApiService.perPage;
-  const currentImages = imgApiService.page * imgApiService.perPage - imgApiService.perPage;
-  const totalImages = imgApiService.totalImages;
-
-  if (currentImages === quantityImagesOnPage && totalImages !== 0) {
-    Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
-  }
-
-  if (currentImages > totalImages && totalImages !== 0 && totalImages > quantityImagesOnPage) {
-    putLoadMoreBtn();
-    Notiflix.Notify.info(
-      `We're sorry, but you've reached the end of search ${totalImages} results`,
-    );
-  }
-
-  console.log(quantityImagesOnPage);
-  console.log(currentImages);
-  console.log(totalImages);
-  console.log(imgApiService.page);
-}
- */
