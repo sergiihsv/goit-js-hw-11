@@ -30,6 +30,7 @@ function onSearch(event) {
     Notiflix.Notify.info('Please, enter you search query.');
     clearArticlesContainer();
     putLoadMoreBtn();
+
     return;
   }
 
@@ -37,6 +38,7 @@ function onSearch(event) {
   imgApiService.fetchArticles().then(hits => {
     clearArticlesContainer();
     appendArticlesMarkup(hits);
+    fetchArticles();
     showLoadMoreBtn();
     galleryModal.refresh();
   });
@@ -71,12 +73,13 @@ async function fetchArticles() {
   try {
     const images = await imgApiService.fetchArticles();
     countOfImages();
+
     if (images.length === 0) {
       putLoadMoreBtn();
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.',
       );
-      /* gallery.innerHTML = ''; */
+      refs.galleryContainer.innerHTML = '';
     }
     render(images);
 
@@ -85,10 +88,9 @@ async function fetchArticles() {
     if (images.length < imgApiService.perPage) {
       putLoadMoreBtn();
     }
-    showLoadMoreBtn();
-  } catch {
+    /* showLoadMoreBtn(); */
     Notiflix.Notify.failure('Sorry.Something wrong(');
-  }
+  } catch {}
 }
 
 function countOfImages() {
