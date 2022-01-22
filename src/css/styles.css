@@ -64,6 +64,10 @@ a {
   margin-bottom: 40px;
 }
 
+/* .load-more .is-hidden {
+  display: none;
+}
+ */
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

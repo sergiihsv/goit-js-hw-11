@@ -6,22 +6,18 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import Notiflix from 'notiflix';
 
-/* const PER_PAGE = 12; */
-
 const refs = {
   searchForm: document.querySelector('.search-form'),
   galleryContainer: document.querySelector('.gallery'),
   loadMoreBtn: document.querySelector('.load-more'),
 };
 
-const imgApiService = new ImgApiService();
+putLoadMoreBtn();
 
-console.log(imgApiService);
+const imgApiService = new ImgApiService();
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtn);
-
-putLoadMoreBtn();
 
 function onSearch(event) {
   event.preventDefault();
@@ -29,7 +25,9 @@ function onSearch(event) {
   imgApiService.query = event.currentTarget.elements.searchQuery.value;
 
   if (imgApiService.query.trim() === '') {
+    putLoadMoreBtn();
     Notiflix.Notify.info('Please, enter you search query.');
+
     clearArticlesContainer();
 
     return;
@@ -38,15 +36,27 @@ function onSearch(event) {
   imgApiService.resetPage();
   imgApiService.fetchArticles().then(hits => {
     clearArticlesContainer();
+    notFindImages(hits);
     appendArticlesMarkup(hits);
-    fetchArticles();
+    countOfImages();
+
     showLoadMoreBtn();
     galleryModal.refresh();
   });
 }
 
+function notFindImages(hits) {
+  if (hits.length === 0) {
+    putLoadMoreBtn();
+    Notiflix.Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.',
+    );
+    putLoadMoreBtn();
+  }
+}
+
 function onLoadMoreBtn() {
-  imgApiService.fetchArticles().then(appendArticlesMarkup);
+  imgApiService.fetchArticles().then(appendArticlesMarkup).then(renderMoreImages);
 }
 
 function appendArticlesMarkup(hits) {
@@ -66,32 +76,21 @@ function showLoadMoreBtn() {
   document.querySelector('.load-more').classList.remove('is-hidden');
 }
 
-const galleryModal = new SimpleLightbox('.gallery a', {});
-
-async function fetchArticles() {
-  putLoadMoreBtn();
-
-  try {
-    const images = await imgApiService.fetchArticles();
-    countOfImages();
-
-    if (images.length === 0) {
-      putLoadMoreBtn();
-      Notiflix.Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.',
-      );
-      refs.galleryContainer.innerHTML = '';
-    }
-    render(images);
-
-    galleryModal.refresh();
-
-    if (images.length < imgApiService.perPage) {
-      putLoadMoreBtn();
-    }
-  } catch {
-    /* Notiflix.Notify.failure('Sorry.Something wrong('); */
+function notFindImages(hits) {
+  if (hits.length === 0) {
+    putLoadMoreBtn();
+    Notiflix.Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.',
+    );
   }
+}
+
+function renderMoreImages(hits) {
+  if (imgApiService.totalImages <= imgApiService.perPage * (imgApiService.page - 1)) {
+    putLoadMoreBtn();
+    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+  }
+  refs.galleryContainer.insertAdjacentHTML('beforeend', articlesTpl(hits));
 }
 
 function countOfImages() {
@@ -100,6 +99,10 @@ function countOfImages() {
   if (totalImages > 0) {
     Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
   }
+
+  if (totalImages > imgApiService.perPage && imgApiService.page > 1) {
+    showLoadMoreBtn();
+  }
 }
 
-console.log(imgApiService);
+const galleryModal = new SimpleLightbox('.gallery a', {});
