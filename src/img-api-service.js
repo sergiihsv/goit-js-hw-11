@@ -8,7 +8,7 @@ export default class ImgApiService {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
-    this.totalHits = 0;
+    /* this.totalHits = 0; */
     this.totalImages;
     this.perPage = 40;
   }

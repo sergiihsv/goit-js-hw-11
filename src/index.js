@@ -16,6 +16,8 @@ const refs = {
 
 const imgApiService = new ImgApiService();
 
+console.log(imgApiService);
+
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtn);
 
@@ -65,6 +67,12 @@ function showLoadMoreBtn() {
   document.querySelector('.load-more').classList.remove('is-hidden');
 }
 
+function countOfImages() {
+  if (/* imgApiService.page === totalImages &&  */ totalImages !== 0) {
+    Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
+  }
+}
+
 const galleryModal = new SimpleLightbox('.gallery a', {});
 
 async function fetchArticles() {
@@ -89,9 +97,35 @@ async function fetchArticles() {
       putLoadMoreBtn();
     }
     /* showLoadMoreBtn(); */
-    Notiflix.Notify.failure('Sorry.Something wrong(');
+    /* Notiflix.Notify.failure('Sorry.Something wrong('); */
   } catch {}
 }
+
+function countOfImages() {
+  const quantityImagesOnPage = imgApiService.perPage;
+  const currentImages = imgApiService.page * imgApiService.perPage - imgApiService.perPage;
+  const totalImages = imgApiService.totalImages;
+
+  if (/* imgApiService.page === totalImages &&  */ totalImages !== 0) {
+    Notiflix.Notify.success(`Hooray! We found ${totalImages} images.`);
+  }
+
+  if (currentImages > totalImages && totalImages !== 0 && totalImages > quantityImagesOnPage) {
+    putLoadMoreBtn();
+    Notiflix.Notify.info(
+      `We're sorry, but you've reached the end of search ${totalImages} results`,
+    );
+  }
+
+  console.log(quantityImagesOnPage);
+  console.log(currentImages);
+  console.log(totalImages);
+  console.log(imgApiService.page);
+}
+
+console.log(imgApiService);
+
+/* 
 
 function countOfImages() {
   const quantityImagesOnPage = imgApiService.perPage;
@@ -108,4 +142,10 @@ function countOfImages() {
       `We're sorry, but you've reached the end of search ${totalImages} results`,
     );
   }
+
+  console.log(quantityImagesOnPage);
+  console.log(currentImages);
+  console.log(totalImages);
+  console.log(imgApiService.page);
 }
+ */
