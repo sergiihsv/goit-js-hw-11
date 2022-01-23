@@ -25,7 +25,6 @@ function onSearch(event) {
   imgApiService.query = event.currentTarget.elements.searchQuery.value;
 
   if (imgApiService.query.trim() === '') {
-    putLoadMoreBtn();
     Notiflix.Notify.info('Please, enter you search query.');
 
     clearArticlesContainer();
@@ -39,20 +38,8 @@ function onSearch(event) {
     notFindImages(hits);
     appendArticlesMarkup(hits);
     countOfImages();
-
-    showLoadMoreBtn();
     galleryModal.refresh();
   });
-}
-
-function notFindImages(hits) {
-  if (hits.length === 0) {
-    putLoadMoreBtn();
-    Notiflix.Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.',
-    );
-    putLoadMoreBtn();
-  }
 }
 
 function onLoadMoreBtn() {
@@ -77,8 +64,8 @@ function showLoadMoreBtn() {
 }
 
 function notFindImages(hits) {
+  putLoadMoreBtn();
   if (hits.length === 0) {
-    putLoadMoreBtn();
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.',
     );
